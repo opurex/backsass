@@ -1,0 +1,15 @@
+# legacy
+config.php
+config.ini
+/.htaccess
+
+
+vendor
+composer.lock
+config/config.ini
+config/test-config.ini
+
+
+#netbeans project tmp file
+nbproject/
+.idea
