@@ -1,0 +1,19 @@
+<phpunit>
+  <testsuites>
+    <testsuite name="System">
+      <directory>System</directory>
+    </testsuite>
+    <testsuite name="Field">
+      <directory>Field</directory>
+    </testsuite>
+    <testsuite name="Model">
+      <directory>Model</directory>
+    </testsuite>
+    <testsuite name="API">
+      <directory>API</directory>
+    </testsuite>
+    <testsuite name="http">
+      <directory>http</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>

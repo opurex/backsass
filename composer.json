@@ -1,0 +1,24 @@
+{
+  "name": "pasteque/server",
+  "licence": "GPLv3 or any later",
+  "minimum-stability": "RC",
+  "require": {
+    "slim/slim": "3.*",
+    "firebase/php-jwt": "^4.0",
+    "dflydev/fig-cookies": "^1.0",
+    "doctrine/orm": "2.*",
+    "doctrine/cache": "1.11",
+    "monolog/monolog": "^1.22"
+        },
+
+  "require-dev": {
+    "zeuxisoo/slim-whoops": "0.6.*",
+    "zircote/swagger-php": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Pasteque\\Server\\": ["src/lib"],
+      "Pasteque\\HTTP\\": ["src/http"]
+    }
+  }
+}

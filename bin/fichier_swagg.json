@@ -1,0 +1,324 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Pasteque API",
+        "version": "0.1"
+    },
+    "paths": {
+        "/api/attribute/getAll": {
+            "get": {
+                "summary": "GET attributeGetAllGet\nSummary:\nNotes: Get an array of all Attributes\nOutput-Formats: [application/json]",
+                "responses": {
+                    "200": {
+                        "description": "An array of attributes"
+                    }
+                }
+            }
+        },
+        "/api/attribute/{id}": {
+            "get": {
+                "summary": "GET attributeIdGet\nSummary:\nNotes: Get an Attribute\nOutput-Formats: [application/json]",
+                "responses": {
+                    "200": {
+                        "description": "get an attribute"
+                    }
+                }
+            }
+        },
+        "/api/cash/getbycashRegister/{id}": {
+            "get": {
+                "summary": "GET cashGetbycashRegisterIdGet\nSummary:\nNotes: Get the last session Cash for a cash register\nOutput-Formats: [application/json]",
+                "responses": {
+                    "200": {
+                        "description": "Get the last session Cash for a cash register"
+                    },
+                    "500": {
+                        "description": "Error"
+                    }
+                }
+            }
+        },
+        "/api/cash/{id}": {
+            "get": {
+                "summary": "GET cashIdGet\nSummary:\nNotes: Get a Cash session\nOutput-Formats: [application/json]",
+                "responses": {
+                    "200": {
+                        "description": "Get a Cash session"
+                    }
+                }
+            }
+        },
+        "/api/cash/zticket/{id}": {
+            "get": {
+                "summary": "GET cashZticketGet\nSummary:\nNotes: get a zticket of a cash session\nOutput-Formats: [application/json]",
+                "responses": {
+                    "200": {
+                        "description": "get a zticket of a cash session"
+                    }
+                }
+            }
+        },
+        "/api/composition/getAll": {
+            "get": {
+                "summary": "GET compositionGetAllGet\nSummary:\nNotes: Get an array of all compositions\nOutput-Formats: [application/json]",
+                "responses": {
+                    "200": {
+                        "description": "An array of compositions"
+                    }
+                }
+            }
+        },
+        "/api/discountprofile/getAll": {
+            "get": {
+                "summary": "GET discountprofileGetAllGet\nSummary:\nNotes: Get an array of all DiscountProfiles\nOutput-Formats: [application/json]",
+                "responses": {
+                    "200": {
+                        "description": "Get an array of all DiscountProfiles"
+                    }
+                }
+            }
+        },
+        "/api/discountprofile/{id}": {
+            "get": {
+                "summary": "GET discountprofileIdGet\nSummary:\nNotes: Get a DiscountProfile\nOutput-Formats: [application/json]",
+                "responses": {
+                    "200": {
+                        "description": "Get a DiscountProfile"
+                    }
+                }
+            }
+        },
+        "/api/image/category/{id}": {
+            "get": {
+                "summary": "GET imageCategoryIdGet\nSummary:\nNotes: get image of the category\nOutput-Formats: [image/jpeg]",
+                "responses": {
+                    "200": {
+                        "description": "get image of the payement mode"
+                    }
+                }
+            }
+        },
+        "/api/image/payement_mode/{id}": {
+            "get": {
+                "summary": "GET imagePayementModeIdGet\nSummary:\nNotes: get image of the payement mode\nOutput-Formats: [image/png]",
+                "responses": {
+                    "200": {
+                        "description": "get image of the payement mode"
+                    }
+                }
+            }
+        },
+        "/api/image/product/{id}": {
+            "get": {
+                "summary": "GET imageProductIdGet\nSummary:\nNotes: get image of the product\nOutput-Formats: [image/jpeg]",
+                "responses": {
+                    "200": {
+                        "description": "get image of the product"
+                    }
+                }
+            }
+        },
+        "/api/image/ressources/{label}": {
+            "get": {
+                "summary": "GET imageRessourcesLabelGet\nSummary:\nNotes: get content of a ressource\nOutput-Formats: [image/jpeg]",
+                "responses": {
+                    "200": {
+                        "description": "get content of a ressource"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "CashRegister": {
+            "properties": {
+                "id": {
+                    "description": "ID of the cash register",
+                    "type": "integer"
+                },
+                "reference": {
+                    "description": "Code of the cash register, user-friendly ID.",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "name of the cash register",
+                    "type": "string"
+                },
+                "nextTicketId": {
+                    "description": "Id (number) of the next Ticket. Starts to 1.",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "nextSessionId": {
+                    "description": "Id (number) of the next session. Starts to 1.",
+                    "type": "integer",
+                    "format": "int32"
+                }
+            },
+            "type": "object"
+        },
+        "Category": {
+            "properties": {
+                "id": {
+                    "description": "Internal ID of the category for performance issues.",
+                    "type": "integer"
+                },
+                "reference": {
+                    "description": "Code of the category, user-friendly ID.",
+                    "type": "string"
+                },
+                "parent": {
+                    "description": "Parent's category if any.",
+                    "type": "integer"
+                },
+                "label": {
+                    "description": "Label of the category",
+                    "type": "string"
+                },
+                "image": {
+                    "description": "Category image if any."
+                },
+                "dispOrder": {
+                    "description": "order",
+                    "type": "integer",
+                    "format": "int32"
+                }
+            },
+            "type": "object"
+        },
+        "Product": {
+            "properties": {
+                "id": {
+                    "description": "ID of the product",
+                    "type": "integer"
+                },
+                "reference": {
+                    "description": "Code of the product, user-friendly ID.",
+                    "type": "string"
+                },
+                "barcode": {
+                    "description": "barcode of a product",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "name of a product",
+                    "type": "string"
+                },
+                "priceBuy": {
+                    "description": "Buy price without taxes, used for estimated margin computation.",
+                    "type": "number",
+                    "format": "float"
+                },
+                "priceSell": {
+                    "description": "sell price without taxes.",
+                    "type": "number",
+                    "format": "float"
+                },
+                "visible": {
+                    "description": "Is product currently in sale (visible on cash registers) ?",
+                    "type": "boolean"
+                },
+                "scaled": {
+                    "description": "Is the product sold by scale?\nisScale can be false with a SCALE_TYPE_WEIGHT (i.e. a box of 200g).\nWhen isScale is true, scaleValue is meaningless.",
+                    "type": "boolean"
+                },
+                "scaleType": {
+                    "description": "See SCALE_TYPE_* constants.\nUsed to compute reference prices like price per liter or kg.",
+                    "type": "integer"
+                },
+                "scaleValue": {
+                    "description": "The scale value for products referenced by weight or volume and\nnot soled by scale.",
+                    "type": "number",
+                    "format": "float"
+                },
+                "category": {
+                    "description": "ID of the category",
+                    "type": "integer"
+                },
+                "dispOrder": {
+                    "description": "order",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "tax": {
+                    "description": "ID of a tax",
+                    "type": "integer"
+                },
+                "image": {
+                    "description": "Product image if any."
+                },
+                "discountEnabled": {
+                    "description": "Is discount currently enabled ?",
+                    "type": "boolean"
+                },
+                "discountRate": {
+                    "description": "rate of the discount",
+                    "type": "number",
+                    "format": "float"
+                }
+            },
+            "type": "object"
+        },
+        "Role": {
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "permissions": {
+                    "description": "List of permissions. It is stored in database in a single string,\nvalues separated by ;. Used as an array once retreived from database."
+                }
+            },
+            "type": "object"
+        },
+        "Tax": {
+            "properties": {
+                "id": {
+                    "description": "ID of the tax",
+                    "type": "integer"
+                },
+                "label": {
+                    "description": "Label of the tax",
+                    "type": "string"
+                },
+                "rate": {
+                    "description": "Rate of the tax",
+                    "type": "number",
+                    "format": "float"
+                }
+            },
+            "type": "object"
+        },
+        "User": {
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "description": "User password.",
+                    "type": "string"
+                },
+                "role": {
+                    "description": "ID of the assigned role",
+                    "type": "integer"
+                },
+                "active": {
+                    "type": "boolean"
+                },
+                "image": {
+                    "description": "User image if any."
+                },
+                "card": {
+                    "description": "Code of User's card",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    }
+}

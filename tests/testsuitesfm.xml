@@ -1,0 +1,16 @@
+<phpunit>
+  <testsuites>
+    <testsuite name="System">
+    </testsuite>
+    <testsuite name="Model">
+    </testsuite>
+    <testsuite name="API">
+      <file>API/VersionAPITest.php</file>
+      <file>API/ArchiveAPIRequestTest.php</file>
+      <file>API/ArchiveAPICreateTest.php</file>
+    </testsuite>
+    <testsuite name="http">
+      <directory>fiscalmirror/http</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>

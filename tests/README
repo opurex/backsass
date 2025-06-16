@@ -1,0 +1,35 @@
+How to test Pasteque
+====================
+
+You must have phpunit installed. See https://phpunit.de for installation.
+
+Copy ../config/test-config-sample.ini to ../config/test-config.ini and set it to point
+to an empty test database. To be able to test http routes, you must also point to
+this instance and create a test user for Pasteque.
+
+Run the full test suite by calling from the tests directory
+$phpunit -c testsuites.xml
+
+Tests are grouped for each layer of the API, one building upon the previous.
+To test each layer separately use one of the following commands:
+$ phpunit -c testsuites.xml --testsuite System
+$ phpunit -c testsuites.xml --testsuite Model
+$ phpunit -c testsuites.xml --testsuite API
+$ phpunit -c testsuites.xml --testsuite http
+
+You can run a single test by calling it with phpunit
+$ phpunit <directory>/<test file>
+
+To test the fiscal mirror mode, use testsuitesfm.xml. Make sure your config.ini files
+sets the server mode to the fiscal mirror mode.
+
+Be sure the database is in the good state to begin the tests. Use doctrine
+to erase/set up the database with orm:schema-tool:drop and create.
+$ php vendor/bin/doctrine orm:schema-tool:drop
+$ php vendor/bin/doctrine orm:schema-tool:create
+
+Writing new tests
+=================
+
+All tests must be named *Test.php to be automatically included in the test suites.
+Put the test file in the according directory.

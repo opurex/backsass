@@ -1,0 +1,3 @@
+# Keep this directory to be able to generate proxies, but ignore them.
+*
+!.gitignore
