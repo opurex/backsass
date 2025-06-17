@@ -1,9 +1,25 @@
-
-
-<footer class="bg-white dark:bg-gray-800 border-t dark:border-gray-700 mt-auto px-6 py-4 text-sm text-center text-gray-500 dark:text-gray-400">
-    <p>
-        Â© <?= date('Y') ?> Opurex POS Server. All rights reserved.
-    </p>
+<!-- Footer -->
+<footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-4 py-4 mt-auto">
+    <div class="text-center text-sm text-gray-500 dark:text-gray-400">
+        &copy; <?= date('Y') ?> Opurex POS Server. All rights reserved.
+    </div>
 </footer>
+
+    <!-- Dark mode and responsive scripts -->
+    <script>
+        // Dark mode persistence
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+        }
+
+        // Initialize dark mode toggle if it exists
+        const darkToggle = document.getElementById('darkToggleBtn');
+        if (darkToggle) {
+            darkToggle.addEventListener('click', function() {
+                document.documentElement.classList.toggle('dark');
+                localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
+            });
+        }
+    </script>
 </body>
 </html>

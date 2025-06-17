@@ -5,7 +5,7 @@ $app->GET('/', function($request, $response, $args) {
     $body = $response->getBody();
     $body->write(file_get_contents(__DIR__ . '/../templates/header.html'));
     require_once(__DIR__ . '/../templates/home.php');
-    $content = render($ptApp, null);
+    $content = renderHome($ptApp, null);
     $body->write($content);
     $body->write(file_get_contents(__DIR__ . '/../templates/footer.html'));
     return $response;

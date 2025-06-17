@@ -75,6 +75,7 @@ include('../routes/ticket.php');
 include('../routes/user.php');
 include('../routes/version.php');
 include('../routes/fiscal.php');
+include('../routes/audit.php');
 
 
 // Run
