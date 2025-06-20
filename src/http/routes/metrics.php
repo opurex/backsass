@@ -17,11 +17,18 @@ $app->GET('/fiscal/metrics', function ($request, $response, $args) {
         $metrics = [];
 
         // 1. Total ticket count
-        $ticketCountRes = APICaller::run($ptApp, 'ticket', 'count', []);
-        if ($ticketCountRes->getStatus() != APIResult::STATUS_CALL_OK) {
-            throw new \Exception("Failed to count tickets.");
+        try {
+            $ticketCountRes = APICaller::run($ptApp, 'ticket', 'count', [[]]);
+            if ($ticketCountRes->getStatus() != APIResult::STATUS_CALL_OK) {
+                error_log("Ticket count API call failed: " . $ticketCountRes->getContent());
+                $metrics['totalTickets'] = 0;
+            } else {
+                $metrics['totalTickets'] = (int) $ticketCountRes->getContent();
+            }
+        } catch (\Exception $e) {
+            error_log("Exception in ticket count: " . $e->getMessage());
+            $metrics['totalTickets'] = 0;
         }
-        $metrics['totalTickets'] = $ticketCountRes->getContent();
 
         // 2. All tickets for revenue calculation
         $ticketsRes = APICaller::run($ptApp, 'ticket', 'search', [[], 1000, 0]);
@@ -52,9 +59,14 @@ $app->GET('/fiscal/metrics', function ($request, $response, $args) {
         $metrics['recentTickets'] = $recentTickets;
 
         // 3. Customer count
-        $customerCountRes = APICaller::run($ptApp, 'customer', 'count', []);
-        $metrics['totalCustomers'] = ($customerCountRes->getStatus() == APIResult::STATUS_CALL_OK)
-            ? $customerCountRes->getContent() : 0;
+        try {
+            $customerCountRes = APICaller::run($ptApp, 'customer', 'count', [[]]);
+            $metrics['totalCustomers'] = ($customerCountRes->getStatus() == APIResult::STATUS_CALL_OK)
+                ? (int) $customerCountRes->getContent() : 0;
+        } catch (\Exception $e) {
+            error_log("Exception in customer count: " . $e->getMessage());
+            $metrics['totalCustomers'] = 0;
+        }
 
         // 4. Active sessions
         $sessionCond = [

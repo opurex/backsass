@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" x-data="{ darkMode: false }" x-init="
+    darkMode = localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    $watch('darkMode', val => localStorage.setItem('darkMode', val));
+" :class="{ 'dark': darkMode }">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Opurex POS Server Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opurex POS - Server Dashboard</title>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -15,15 +17,9 @@
                     colors: {
                         primary: {
                             50: '#eff6ff',
-                            100: '#dbeafe',
-                            200: '#bfdbfe',
-                            300: '#93c5fd',
-                            400: '#60a5fa',
                             500: '#3b82f6',
                             600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
+                            700: '#1d4ed8'
                         },
                         gray: {
                             50: '#f9fafb',
@@ -54,36 +50,38 @@
         };
     </script>
     <style>
+        [x-cloak] { display: none !important; }
+        .sidebar-transition { transition: transform 0.3s ease-in-out; }
         body {
             font-family: 'Inter', sans-serif;
         }
-        
+
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
         }
-        
+
         ::-webkit-scrollbar-track {
             background: #f1f5f9;
         }
-        
+
         ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 3px;
         }
-        
+
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
-        
+
         .dark ::-webkit-scrollbar-track {
             background: #1e293b;
         }
-        
+
         .dark ::-webkit-scrollbar-thumb {
             background: #475569;
         }
-        
+
         .dark ::-webkit-scrollbar-thumb:hover {
             background: #64748b;
         }
@@ -92,13 +90,106 @@
         * {
             transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
         }
+
+        /* Layout fixes */
+        .sidebar-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 16rem;
+            z-index: 40;
+        }
+
+        .main-content {
+            margin-left: 16rem;
+            min-height: 100vh;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
     </style>
+    <script>
+        // Initialize Alpine stores before Alpine starts
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('sidebar', {
+                open: false,
+                toggle() {
+                    this.open = !this.open;
+                }
+            });
+        });
+
+        function darkToggle() {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('darkMode', 'false');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('darkMode', 'true');
+            }
+        }
+
+        // Initialize dark mode on page load
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+        }
+
+        function loadContent(url, title, key) {
+            console.log('Loading content:', { url, title, key });
+
+            // Create and dispatch the event
+            window.dispatchEvent(new CustomEvent('load-content', {
+                detail: { url, title, key }
+            }));
+        }
+
+        // Dashboard manager function
+        function dashboardManager() {
+            return {
+                sidebarOpen: false,
+                activePage: 'dashboard',
+                activeContent: null,
+                loading: false,
+                error: null,
+                contentHtml: '',
+
+                init() {
+                    this.activePage = 'dashboard';
+                },
+
+                handleContentLoad(detail) {
+                    this.loading = true;
+                    this.error = null;
+                    this.activeContent = detail;
+
+                    fetch(detail.url)
+                        .then(response => {
+                            if (!response.ok) throw new Error('Failed to load content');
+                            return response.text();
+                        })
+                        .then(html => {
+                            this.contentHtml = html;
+                            this.loading = false;
+                        })
+                        .catch(err => {
+                            this.error = err.message;
+                            this.loading = false;
+                        });
+                }
+            };
+        }
+    </script>
+
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-sans">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
 
 <!-- Top Header Bar -->
-<header x-data="{ 
-    userMenuOpen: false, 
+<header x-data="{
+    userMenuOpen: false,
     darkMode: localStorage.getItem('darkMode') === 'true' || false,
     toggleDarkMode() {
         this.darkMode = !this.darkMode;
@@ -110,27 +201,27 @@
             localStorage.setItem('darkMode', 'false');
         }
     }
-}" 
+}"
 x-init="
-    if (darkMode) {
-        document.documentElement.classList.add('dark');
-    } else {
-        document.documentElement.classList.remove('dark');
-    }
-"
+                if (darkMode) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            "
 class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50">
     <div class="flex items-center justify-between h-16 px-4 lg:px-8">
         <!-- Left Side - Logo and Title -->
         <div class="flex items-center space-x-4">
             <!-- Mobile Sidebar Toggle -->
-            <button @click="$dispatch('toggle-sidebar')" 
+            <button @click="$dispatch('toggle-sidebar')"
                     class="lg:hidden p-2 rounded-lg text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
                     aria-label="Toggle sidebar">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                 </svg>
             </button>
-            
+
             <!-- Logo and Brand -->
             <div class="flex items-center space-x-3">
                 <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -153,7 +244,7 @@ class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
                 </div>
-                <input type="text" placeholder="Search transactions, customers..." 
+                <input type="text" placeholder="Search transactions, customers..."
                        class="block w-full pl-10 pr-4 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200">
             </div>
         </div>
@@ -169,7 +260,7 @@ class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-
             </button>
 
             <!-- Dark/Light Mode Toggle -->
-            <button @click="toggleDarkMode()" 
+            <button @click="toggleDarkMode()"
                     class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
                     :aria-label="darkMode ? 'Switch to light mode' : 'Switch to dark mode'">
                 <!-- Sun Icon (shown in dark mode) -->
@@ -184,7 +275,7 @@ class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-
 
             <!-- User Menu Dropdown -->
             <div class="relative">
-                <button @click="userMenuOpen = !userMenuOpen" 
+                <button @click="userMenuOpen = !userMenuOpen"
                         class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500">
                     <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center shadow-md">
                         <span class="text-white text-sm font-semibold">A</span>
@@ -193,15 +284,15 @@ class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-
                         <p class="text-sm font-medium text-gray-900 dark:text-white">Admin</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400">Administrator</p>
                     </div>
-                    <svg class="w-4 h-4 text-gray-400 transition-transform duration-200" 
-                         :class="{'rotate-180': userMenuOpen}" 
+                    <svg class="w-4 h-4 text-gray-400 transition-transform duration-200"
+                         :class="{'rotate-180': userMenuOpen}"
                          fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                     </svg>
                 </button>
-                
+
                 <!-- Dropdown Menu -->
-                <div x-show="userMenuOpen" 
+                <div x-show="userMenuOpen"
                      @click.away="userMenuOpen = false"
                      x-transition:enter="transition ease-out duration-200"
                      x-transition:enter-start="transform opacity-0 scale-95"
@@ -211,13 +302,13 @@ class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-
                      x-transition:leave-end="transform opacity-0 scale-95"
                      class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-xl ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 dark:divide-gray-700 z-50"
                      style="display: none;">
-                    
+
                     <!-- User Info -->
                     <div class="px-4 py-3">
                         <p class="text-sm font-medium text-gray-900 dark:text-white">Signed in as</p>
                         <p class="text-sm text-gray-500 dark:text-gray-400 truncate">admin@opurex.com</p>
                     </div>
-                    
+
                     <!-- Menu Items -->
                     <div class="py-1">
                         <a href="./passwordupd/" class="group flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
@@ -234,7 +325,7 @@ class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-
                             Settings
                         </a>
                     </div>
-                    
+
                     <!-- Logout -->
                     <div class="py-1">
                         <a href="./disconnect" class="group flex items-center px-4 py-2 text-sm text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
@@ -251,5 +342,7 @@ class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-
 </header>
 
 <!-- Body padding to account for fixed header -->
-<!--<div class="pt-16">-->
-<body class="bg-gray-100 dark:bg-darkbg text-gray-900 dark:text-white min-h-screen flex">
+<div class="pt-16">
+</div>
+</body>
+</html>

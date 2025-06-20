@@ -6,8 +6,14 @@ function render($ptApp, $data = []) {
     if (isset($data['sequences']) || isset($data['types'])) {
         return renderFiscalMenu($ptApp, $data);
     }
-    // Default fallback - render regular navigation
-    return renderMenu($ptApp, 'dashboard', 'main');
+    // Default fallback - render basic content
+    $content = '<div class="container mx-auto px-4 py-8">';
+    $content .= '<h1 class="text-2xl font-bold mb-4">Menu</h1>';
+    $content .= '<div class="bg-white shadow rounded-lg p-6">';
+    $content .= '<p>No menu data available.</p>';
+    $content .= '</div>';
+    $content .= '</div>';
+    return $content;
 }
 
 function renderMenu($ptApp, $currentPage = '', $menuType = 'main') {
